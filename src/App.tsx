@@ -3,8 +3,8 @@ import { Provider } from "react-redux";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 
 import { store } from "./redux/countStore.ts";
-import Main from "./pages/Main";
-import ErrorPage from "./pages/ErrorPage";
+import Main from "./pages/Main.tsx";
+import ErrorPage from "./pages/ErrorPage.tsx";
 
 export default function App() {
   return (
