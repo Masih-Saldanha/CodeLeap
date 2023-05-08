@@ -4,7 +4,7 @@ import { useDispatch } from "react-redux";
 import styled from "styled-components";
 
 import { useAppSelector } from "../redux/hook.ts";
-import { signUp, loadingOn, loadingOff } from "../redux/signUpSlice.ts";
+import { editSignUpText } from "../redux/signUpSlice.ts";
 import networkRequests from "../actions/networkRequests.ts";
 
 function SignUpSquare() {
@@ -17,25 +17,12 @@ function SignUpSquare() {
     const dispatch = useDispatch();
 
     function handleText(e: { target: { value: any; }; }) {
-        dispatch(signUp(e.target.value));
+        dispatch(editSignUpText(e.target.value));
     };
 
     function handleSubmit(e: { preventDefault: () => void; }) {
         e.preventDefault();
         navigate("/main");
-        // dispatch(loadingOn());
-        // setTimeout(() => dispatch(loadingOff()), 3000);
-        // setTimeout(dispatch(loadingOff), 5000);
-        // networkRequests
-        //     .signUp(signUpText)
-        //     .then((response) => {
-        //         dispatch(loadingOff);
-        //         console.log(response);
-        //     })
-        //     .catch((e) => {
-        //         dispatch(loadingOff);
-        //         console.log(e);
-        //     });
     };
 
     return (
@@ -86,7 +73,7 @@ const ButtonBox = styled.div`
     display: flex;
     justify-content: end;
     button {
-        background-color: ${(props) => props.children.props.color};
+        background-color: ${(props: { children: { props: { color: any; }; }; }) => props.children.props.color};
         color: #FFFFFF;
     }
 `

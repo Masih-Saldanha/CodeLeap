@@ -1,9 +1,21 @@
-import React from "react";
+import React, { useEffect } from "react";
 import styled from "styled-components";
 
+import { useAppSelector } from "../redux/hook.ts";
 import PostSquare from "../components/PostSquare.tsx";
+import { useNavigate } from "react-router-dom";
 
 function Main() {
+    const navigate = useNavigate();
+
+    const signUpText = useAppSelector((state) => state.signUpReducer.signUpText);
+
+    useEffect(() => {
+        if (signUpText === "") {
+            navigate("/signup");
+        };
+    }, [])
+
     return (
         <MainDiv>
             <section>
