@@ -1,10 +1,12 @@
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
-export default function ErrorPage() {
+function ErrorPage() {
   const navigate = useNavigate();
 
-  useEffect(() => navigate("/"), []);
+  useEffect(() => navigate("/signup"), []);
 
-  return <h1>This page doesn't exist, redirecting you to the main page</h1>;
+  return <h2>This page doesn't exist, redirecting you to the sign up page</h2>;
 }
+
+export default ErrorPage;
