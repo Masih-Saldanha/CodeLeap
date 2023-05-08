@@ -2,12 +2,12 @@ import axios from "axios";
 
 const BASE_URL = "https://dev.codeleap.co.uk/careers";
 
-function signUp(signUpData: string) {
-    return axios.post(`${BASE_URL}/`, signUpData);
+function postText(username: string, title: string, content: string) {
+    return axios.post(`${BASE_URL}/`, { username, title, content });
 };
 
 const networkRequests = {
-    signUp,
+    postText,
 };
 
 export default networkRequests;

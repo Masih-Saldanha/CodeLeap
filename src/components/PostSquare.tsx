@@ -4,8 +4,10 @@ import styled from "styled-components";
 
 import { useAppSelector } from "../redux/hook.ts";
 import { editTitle, editContent } from "../redux/postSlice.ts";
+import networkRequests from "../actions/networkRequests.ts";
 
 function PostSquare() {
+    const username = useAppSelector((state) => state.signUpReducer.signUpText);
     const titleText = useAppSelector((state) => state.postReducer.titleText);
     const contentText = useAppSelector((state) => state.postReducer.contentText);
     const postButtonDisabled = useAppSelector((state) => state.postReducer.postButtonDisabled);
@@ -23,21 +25,15 @@ function PostSquare() {
 
     function handleSubmit(e: { preventDefault: () => void; }) {
         e.preventDefault();
-        console.log("test");
-        // dispatch(loadingOn());
-        // setTimeout(() => dispatch(loadingOff()), 3000);
-        // setTimeout(dispatch(loadingOff), 5000);
-        // networkRequests
-        //     .signUp(signUpText)
-        //     .then((response) => {
-        //         dispatch(loadingOff);
-        //         console.log(response);
-        //     })
-        //     .catch((e) => {
-        //         dispatch(loadingOff);
-        //         console.log(e);
-        //     });
-    }
+        networkRequests
+            .postText(username, titleText, contentText)
+            .then((response) => {
+                console.log(response.data);
+            })
+            .catch((e) => {
+                console.log(e.response.data);
+            });
+    };
 
     return (
         <PostArticle>
