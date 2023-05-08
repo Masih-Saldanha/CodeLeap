@@ -1,4 +1,5 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import styled from "styled-components";
 
@@ -7,6 +8,8 @@ import { signUp, loadingOn, loadingOff } from "../redux/signUpSlice.ts";
 import networkRequests from "../actions/networkRequests.ts";
 
 function SignUpSquare() {
+    const navigate = useNavigate();
+
     const signUpText = useAppSelector((state) => state.signUpReducer.signUpText);
     const loading = useAppSelector((state) => state.signUpReducer.loading);
     const buttonBackgroundColor = useAppSelector((state) => state.signUpReducer.buttonBackgroundColor);
@@ -19,7 +22,7 @@ function SignUpSquare() {
 
     function handleSubmit(e: { preventDefault: () => void; }) {
         e.preventDefault();
-        console.log("test")
+        navigate("/main");
         // dispatch(loadingOn());
         // setTimeout(() => dispatch(loadingOff()), 3000);
         // setTimeout(dispatch(loadingOff), 5000);
@@ -58,7 +61,7 @@ function SignUpSquare() {
     )
 }
 
-const SignUpForm = styled.div`
+const SignUpForm = styled.main`
     background-color: #FFFFFF;
     border: 1px solid #CCCCCC;
     border-radius: 16px;
@@ -68,6 +71,14 @@ const SignUpForm = styled.div`
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
+    form {
+        h2 {
+            margin-bottom: 24px;            
+        }
+        h3 {
+            margin-bottom: 8px;
+        }
+    }
 `
 
 const ButtonBox = styled.div`
