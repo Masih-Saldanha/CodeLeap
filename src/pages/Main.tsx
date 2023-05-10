@@ -1,20 +1,36 @@
 import React, { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
 import { useAppSelector } from "../redux/hook.ts";
 import PostSquare from "../components/PostSquare.tsx";
-import { useNavigate } from "react-router-dom";
+import PostModel from "../components/PostModel.tsx";
+import networkRequests from "../actions/networkRequests.ts";
+import { useDispatch } from "react-redux";
+import { getPosts } from "../redux/postListSlice.ts";
 
 function Main() {
     const navigate = useNavigate();
 
     const signUpText = useAppSelector((state) => state.signUpReducer.signUpText);
+    const postList = useAppSelector((state) => state.postListReducer.postList);
+
+    const dispatch = useDispatch();
 
     useEffect(() => {
         if (signUpText === "") {
             navigate("/signup");
+            return;
         };
-    }, [])
+        networkRequests
+            .getPosts(0)
+            .then((response) => {
+                dispatch(getPosts(response.data.results));
+            })
+            .catch((e) => {
+                console.log(e.response.data);
+            })
+    }, []);
 
     return (
         <MainDiv>
@@ -23,6 +39,20 @@ function Main() {
                     <h1>CodeLeap Network</h1>
                 </header>
                 <PostSquare></PostSquare>
+                {
+                    postList.map((post) => {
+                        const { id, title, username, created_datetime, content } = post;
+                        return (
+                            <PostModel
+                                key={id}
+                                title={title}
+                                username={username}
+                                created_datetime={created_datetime}
+                                content={content}
+                            ></PostModel>
+                        );
+                    },)
+                }
             </section>
         </MainDiv>
     )

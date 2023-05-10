@@ -7,7 +7,7 @@ import { editTitle, editContent } from "../redux/postSlice.ts";
 import networkRequests from "../actions/networkRequests.ts";
 
 function PostSquare() {
-    const username = useAppSelector((state) => state.signUpReducer.signUpText);
+    const signUpText = useAppSelector((state) => state.signUpReducer.signUpText);
     const titleText = useAppSelector((state) => state.postReducer.titleText);
     const contentText = useAppSelector((state) => state.postReducer.contentText);
     const postButtonDisabled = useAppSelector((state) => state.postReducer.postButtonDisabled);
@@ -26,7 +26,7 @@ function PostSquare() {
     function handleSubmit(e: { preventDefault: () => void; }) {
         e.preventDefault();
         networkRequests
-            .postText(username, titleText, contentText)
+            .postText(signUpText, titleText, contentText)
             .then((response) => {
                 console.log(response.data);
             })
