@@ -1,16 +1,14 @@
 import { configureStore } from "@reduxjs/toolkit";
 
-import { signUpReducer } from "./signUpSlice.ts";
-import { postReducer } from "./postSlice.ts";
-import { postListReducer } from "./postListSlice.ts";
-import { editPostReducer } from "./editPostSlice.ts";
+import { signUpReducer } from "./signUpSlice";
+import { postReducer } from "./postSlice";
+import { postListReducer } from "./postListSlice";
 
 export const store = configureStore({
     reducer: {
         signUpReducer,
         postReducer,
         postListReducer,
-        editPostReducer,
     },
 });
 

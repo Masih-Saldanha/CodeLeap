@@ -1,13 +1,13 @@
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
 import styled from "styled-components";
 
-import { useAppSelector } from "../redux/hook.ts";
-import PostSquare from "../components/PostSquare.tsx";
-import PostModel from "../components/PostModel.tsx";
-import networkRequests from "../actions/networkRequests.ts";
-import { useDispatch } from "react-redux";
-import { getFreshPosts, getPosts } from "../redux/postListSlice.ts";
+import { useAppSelector } from "../redux/hook";
+import { getFreshPosts } from "../redux/postListSlice";
+import networkRequests from "../actions/networkRequests";
+import PostSquare from "../components/PostSquare";
+import PostModel from "../components/PostModel";
 
 function Main() {
     const navigate = useNavigate();
@@ -28,7 +28,7 @@ function Main() {
                 dispatch(getFreshPosts(response.data.results));
             })
             .catch((e) => {
-                console.log(e.response.data);
+                alert("could not retrieve new posts");
             })
     }, []);
 
@@ -64,12 +64,10 @@ const MainDiv = styled.main`
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    /* border: 1px solid black; */
     section {
         background-color: #FFFFFF;
         max-width: 800px;
         width: 100%;
-        /* width: 800px; */
         header {
             background-color: #7695EC;
             padding: 27px 37px;

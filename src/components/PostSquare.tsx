@@ -2,10 +2,10 @@ import React from "react";
 import { useDispatch } from "react-redux";
 import styled from "styled-components";
 
-import { useAppSelector } from "../redux/hook.ts";
-import { editTitle, editContent } from "../redux/postSlice.ts";
-import networkRequests from "../actions/networkRequests.ts";
-import { getFreshPosts } from "../redux/postListSlice.ts";
+import { useAppSelector } from "../redux/hook";
+import { editTitle, editContent } from "../redux/postSlice";
+import { getFreshPosts } from "../redux/postListSlice";
+import networkRequests from "../actions/networkRequests";
 
 function PostSquare() {
     const signUpText = useAppSelector((state) => state.signUpReducer.signUpText);
@@ -33,14 +33,15 @@ function PostSquare() {
                     .getPosts(0)
                     .then((response) => {
                         dispatch(getFreshPosts(response.data.results));
+                        dispatch(editTitle(""));
+                        dispatch(editContent(""));
                     })
                     .catch((e) => {
-                        console.log(e.response.data);
+                        alert("could not retrieve new posts");
                     });
-                console.log(response.data);
             })
             .catch((e) => {
-                console.log(e.response.data);
+                alert("could not send your post");
             });
     };
 

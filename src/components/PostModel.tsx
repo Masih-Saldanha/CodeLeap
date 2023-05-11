@@ -1,15 +1,14 @@
 import React, { useState } from "react";
+import Modal from "react-modal";
+import { useDispatch } from "react-redux";
 import dayjs from "dayjs";
 import styled from "styled-components";
-import { useDispatch } from "react-redux";
-import Modal from "react-modal";
-// import { BiEdit } from "react-icons/bi"
 
-import { useAppSelector } from "../redux/hook.ts";
+import { useAppSelector } from "../redux/hook";
+import networkRequests from "../actions/networkRequests";
+import { getFreshPosts } from "../redux/postListSlice";
 import trash from "../assets/trash.svg";
 import edit from "../assets/edit.svg";
-import networkRequests from "../actions/networkRequests.ts";
-import { getFreshPosts } from "../redux/postListSlice.ts";
 
 function PostModel(props: { postId: number; title: any; username: any; created_datetime: any; content: any; }) {
     const { postId, title, username, created_datetime, content } = props;
@@ -37,14 +36,15 @@ function PostModel(props: { postId: number; title: any; username: any; created_d
     const years = now.diff(date, "year");
 
     let minuteString: string;
-    minutes !== 1 ? (minuteString = "minutes") : (minuteString = "minute");
     let hourString: string;
-    hours !== 1 ? (hourString = "hours") : (hourString = "hour");
     let dayString: string;
-    days !== 1 ? (dayString = "days") : (dayString = "day");
     let monthString: string;
-    months !== 1 ? (monthString = "months") : (monthString = "month");
     let yearString: string;
+    
+    minutes !== 1 ? (minuteString = "minutes") : (minuteString = "minute");
+    hours !== 1 ? (hourString = "hours") : (hourString = "hour");
+    days !== 1 ? (dayString = "days") : (dayString = "day");
+    months !== 1 ? (monthString = "months") : (monthString = "month");
     years !== 1 ? (yearString = "years") : (yearString = "year");
 
     let dateString = `${minutes} ${minuteString} ago`
@@ -61,20 +61,17 @@ function PostModel(props: { postId: number; title: any; username: any; created_d
         networkRequests
             .deletePost(postId)
             .then((response) => {
-                console.log(response.data);
-                console.log("deletou");
                 networkRequests
                     .getPosts(0)
                     .then((response) => {
                         dispatch(getFreshPosts(response.data.results));
-                        console.log("pegou lista de novo")
                     })
                     .catch((e) => {
-                        console.log(e.response.data);
+                        alert("could not retrieve new posts");
                     });
             })
             .catch((e) => {
-                console.log(e.response.data);
+                alert("could not delete your post");
             });
     }
 
@@ -82,7 +79,7 @@ function PostModel(props: { postId: number; title: any; username: any; created_d
         setIsOpenEdit(!isOpenEdit);
     };
 
-    function handleEditInputs(e, property) {
+    function handleEditInputs(e: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLTextAreaElement>, property: string) {
         setEditData({ ...editData, [property]: e.target.value });
     };
 
@@ -90,22 +87,19 @@ function PostModel(props: { postId: number; title: any; username: any; created_d
         networkRequests
             .editPost(postId, editData.title, editData.content)
             .then((response) => {
-                console.log(response.data);
-                console.log("editou");
                 networkRequests
                     .getPosts(0)
                     .then((response) => {
                         dispatch(getFreshPosts(response.data.results));
-                        console.log("pegou lista de novo");
                         toggleModalEdit();
                         setEditData({title: "", content: ""});
                     })
                     .catch((e) => {
-                        console.log(e.response.data);
+                        alert("could not retrieve new posts");
                     });
             })
             .catch((e) => {
-                console.log(e.response.data);
+                alert("could not edit your post");
             });
     };
 
@@ -162,7 +156,6 @@ function PostModel(props: { postId: number; title: any; username: any; created_d
                                 {/* !deleting ? */}
                                 <>
                                     <h2>Edit item</h2>
-                                    {/* COLOCAR CONTEUDO AQUI EM BAIXO */}
                                     <h3>Title</h3>
                                     <input
                                         type="text"
@@ -176,7 +169,6 @@ function PostModel(props: { postId: number; title: any; username: any; created_d
                                         value={editData.content}
                                         onChange={(e) => handleEditInputs(e, "content")}
                                     ></textarea>
-                                    {/* COLOCAR CONTEUDO AQUI EM CIMA */}
                                     <aside>
                                         <aside>
                                             <CancelDelete onClick={toggleModalEdit}>Cancel</CancelDelete>
@@ -188,8 +180,6 @@ function PostModel(props: { postId: number; title: any; username: any; created_d
                                 {/* <h1>LOADING</h1> */}
                                 {/* } */}
                             </Modal>
-                            {/* <BiEdit size="24px" color="white" /> */}
-                            {/* <BiTrashAlt size="24px" color="white" /> */}
                         </div>
                         :
                         <></>

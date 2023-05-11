@@ -2,11 +2,10 @@ import React from "react";
 import { Provider } from "react-redux";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 
-// import { store } from "./redux/countStore.ts";
-import { store } from "./redux/store.ts";
-import ErrorPage from "./pages/ErrorPage.tsx";
-import SignUp from "./pages/SignUp.tsx";
-import Main from "./pages/Main.tsx";
+import { store } from "./redux/store";
+import ErrorPage from "./pages/ErrorPage";
+import SignUp from "./pages/SignUp";
+import Main from "./pages/Main";
 
 export default function App() {
   return (

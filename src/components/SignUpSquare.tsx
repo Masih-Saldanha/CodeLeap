@@ -3,9 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import styled from "styled-components";
 
-import { useAppSelector } from "../redux/hook.ts";
-import { editSignUpText } from "../redux/signUpSlice.ts";
-import networkRequests from "../actions/networkRequests.ts";
+import { useAppSelector } from "../redux/hook";
+import { editSignUpText } from "../redux/signUpSlice";
 
 function SignUpSquare() {
     const navigate = useNavigate();
