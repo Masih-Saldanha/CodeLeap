@@ -1,16 +1,27 @@
-import React from "react";
+import React, { useState } from "react";
 import dayjs from "dayjs";
 import styled from "styled-components";
+import { useDispatch } from "react-redux";
+import Modal from "react-modal";
 // import { BiEdit } from "react-icons/bi"
 
 import { useAppSelector } from "../redux/hook.ts";
 import trash from "../assets/trash.svg";
 import edit from "../assets/edit.svg";
+import networkRequests from "../actions/networkRequests.ts";
+import { getFreshPosts } from "../redux/postListSlice.ts";
 
-function PostModel(props: { title: any; username: any; created_datetime: any; content: any; }) {
-    const { title, username, created_datetime, content } = props;
+function PostModel(props: { postId: number; title: any; username: any; created_datetime: any; content: any; }) {
+    const { postId, title, username, created_datetime, content } = props;
 
     const signUpText = useAppSelector((state) => state.signUpReducer.signUpText);
+    
+    const [isOpenDelete, setIsOpenDelete] = useState(false);
+    const [isOpenEdit, setIsOpenEdit] = useState(false);
+
+    const dispatch = useDispatch();
+
+    Modal.setAppElement("#root");
 
     const now = dayjs(Date());
     const date = dayjs(created_datetime);
@@ -38,11 +49,36 @@ function PostModel(props: { title: any; username: any; created_datetime: any; co
     months === 0 ? (dateString = dateString) : (dateString = `${months} ${monthString} ago`);
     years === 0 ? (dateString = dateString) : (dateString = `${years} ${yearString} ago`);
 
-    function handleDelete() {
-
+    function toggleModalDelete() {
+        setIsOpenDelete(!isOpenDelete);
     };
 
-    function handleEdit() {
+    function deletePost() {
+        networkRequests
+            .deletePost(postId)
+            .then((response) => {
+                console.log(response.data);
+                console.log("deletou");
+                networkRequests
+                    .getPosts(0)
+                    .then((response) => {
+                        dispatch(getFreshPosts(response.data.results));
+                        console.log("pegou lista de novo")
+                    })
+                    .catch((e) => {
+                        console.log(e.response.data);
+                    });
+            })
+            .catch((e) => {
+                console.log(e.response.data);
+            });
+    }
+
+    function toggleModalEdit() {
+        setIsOpenEdit(!isOpenEdit);
+    };
+
+    function editPost() {
 
     };
 
@@ -53,8 +89,78 @@ function PostModel(props: { title: any; username: any; created_datetime: any; co
                 {
                     signUpText === username ?
                         <div>
-                            <img src={trash} onClick={handleDelete}></img>
-                            <img src={edit} onClick={handleEdit}></img>
+                            <img src={trash} onClick={toggleModalDelete}></img>
+                            <Modal
+                                isOpen={isOpenDelete}
+                                onRequestClose={toggleModalDelete}
+                                className="_"
+                                overlayClassName="_"
+                                contentElement={(props, children) => (
+                                    <DeleteModalStyle {...props}>{children}</DeleteModalStyle>
+                                )}
+                                overlayElement={(props, contentElement) => (
+                                    <DeleteOverlayStyle {...props}>{contentElement}</DeleteOverlayStyle>
+                                )}
+                            >
+                                {/* { */}
+                                {/* !deleting ? */}
+                                <>
+                                    <h2>Are you sure you want to delete this item?</h2>
+                                    <aside>
+                                        <aside>
+                                            <CancelDelete onClick={toggleModalDelete}>Cancel</CancelDelete>
+                                            <ConfirmDelete onClick={deletePost}>Delete</ConfirmDelete>
+                                        </aside>
+                                    </aside>
+                                </>
+                                {/* : */}
+                                {/* <h1>LOADING</h1> */}
+                                {/* } */}
+                            </Modal>
+
+                            <img src={edit} onClick={toggleModalEdit}></img>
+                            <Modal
+                                isOpen={isOpenEdit}
+                                onRequestClose={toggleModalEdit}
+                                className="_"
+                                overlayClassName="_"
+                                contentElement={(props, children) => (
+                                    <DeleteModalStyle {...props}>{children}</DeleteModalStyle>
+                                )}
+                                overlayElement={(props, contentElement) => (
+                                    <DeleteOverlayStyle {...props}>{contentElement}</DeleteOverlayStyle>
+                                )}
+                            >
+                                {/* { */}
+                                {/* !deleting ? */}
+                                <>
+                                    <h2>Edit item</h2>
+                                    {/* COLOCAR CONTEUDO AQUI EM BAIXO */}
+                                    <h3>Title</h3>
+                                    <input
+                                        type="text"
+                                        placeholder="Hello world"
+                                        // value={}
+                                        // onChange={}
+                                    ></input>
+                                    <h3>Content</h3>
+                                    <textarea
+                                        placeholder="Content here"
+                                        // value={}
+                                        // onChange={}
+                                    ></textarea>
+                                    {/* COLOCAR CONTEUDO AQUI EM CIMA */}
+                                    <aside>
+                                        <aside>
+                                            <CancelDelete onClick={toggleModalEdit}>Cancel</CancelDelete>
+                                            <ConfirmEdit onClick={editPost}>Save</ConfirmEdit>
+                                        </aside>
+                                    </aside>
+                                </>
+                                {/* : */}
+                                {/* <h1>LOADING</h1> */}
+                                {/* } */}
+                            </Modal>
                             {/* <BiEdit size="24px" color="white" /> */}
                             {/* <BiTrashAlt size="24px" color="white" /> */}
                         </div>
@@ -102,6 +208,81 @@ const UserDataBar = styled.div`
     color: #777777;
     display: flex;
     justify-content: space-between;
+`
+
+const DeleteModalStyle = styled.div`
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    background-color: #FFFFFF;
+    border-radius: 16px;
+    border: 1px solid #999999;
+    width: 660px;
+    height: auto;
+    padding: 24px;
+    h3 {
+        padding: 24px 0 8px 0;
+    }
+    input {
+        border: 1px solid #777777;
+        font-size: 14px;
+    }
+    input::placeholder {
+        font-size: 14px;
+        color: #CCCCCC;
+    }
+    textarea {
+        resize: none;
+        width: 100%;
+        height: 74px;
+        border-radius: 8px;
+        border: 1px solid #777777;
+        padding: 8px;
+        font-size: 14px;
+    }
+    textarea::placeholder {
+        font-size: 14px;
+        color: #CCCCCC;
+    }
+    aside{
+        width: 100%;
+        display: flex;
+        justify-content: end;
+        padding-top: 12px;
+        aside {
+            width: 256px;
+            display: flex;
+            justify-content: space-between;
+        }
+    }
+`
+
+const DeleteOverlayStyle = styled.div`
+    position: fixed;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 3500;
+    background: rgba(119, 119, 119, 0.8);
+`
+
+const CancelDelete = styled.button`
+    background-color: #FFFFFF;
+    border: 1px solid #999999;
+`
+
+const ConfirmDelete = styled.button`
+    background-color: #FF5151;
+    color: #FFFFFF;
+`
+
+const ConfirmEdit = styled.button`
+    background-color: #47B960;
+    color: #FFFFFF;
 `
 
 export default PostModel;

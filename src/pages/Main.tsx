@@ -45,6 +45,7 @@ function Main() {
                         return (
                             <PostModel
                                 key={id}
+                                postId={id}
                                 title={title}
                                 username={username}
                                 created_datetime={created_datetime}

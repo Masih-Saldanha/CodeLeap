@@ -34,6 +34,8 @@ button {
   border: none;
   border-radius: 8px;
   padding: 8px 30px;
+  min-width: 120px;
+  min-height: 32px;
   
   font-weight: 700;
   font-size: 16px;
