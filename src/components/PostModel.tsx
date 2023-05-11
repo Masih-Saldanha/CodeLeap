@@ -9,6 +9,7 @@ import networkRequests from "../actions/networkRequests";
 import { getFreshPosts } from "../redux/postListSlice";
 import trash from "../assets/trash.svg";
 import edit from "../assets/edit.svg";
+import Loading from "./Loading";
 
 function PostModel(props: { postId: number; title: any; username: any; created_datetime: any; content: any; }) {
     const { postId, title, username, created_datetime, content } = props;
@@ -17,6 +18,8 @@ function PostModel(props: { postId: number; title: any; username: any; created_d
 
     const [isOpenDelete, setIsOpenDelete] = useState(false);
     const [isOpenEdit, setIsOpenEdit] = useState(false);
+    const [deleting, setDeleting] = useState(false);
+    const [editing, setEditing] = useState(false);
     const [editData, setEditData] = useState({
         title: "",
         content: "",
@@ -40,7 +43,7 @@ function PostModel(props: { postId: number; title: any; username: any; created_d
     let dayString: string;
     let monthString: string;
     let yearString: string;
-    
+
     minutes !== 1 ? (minuteString = "minutes") : (minuteString = "minute");
     hours !== 1 ? (hourString = "hours") : (hourString = "hour");
     days !== 1 ? (dayString = "days") : (dayString = "day");
@@ -58,19 +61,23 @@ function PostModel(props: { postId: number; title: any; username: any; created_d
     };
 
     function deletePost() {
+        setDeleting(true);
         networkRequests
             .deletePost(postId)
             .then((response) => {
                 networkRequests
                     .getPosts(0)
                     .then((response) => {
+                        setDeleting(false);
                         dispatch(getFreshPosts(response.data.results));
                     })
                     .catch((e) => {
+                        setDeleting(false);
                         alert("could not retrieve new posts");
                     });
             })
             .catch((e) => {
+                setDeleting(false);
                 alert("could not delete your post");
             });
     }
@@ -84,21 +91,25 @@ function PostModel(props: { postId: number; title: any; username: any; created_d
     };
 
     function editPost() {
+        setEditing(true);
         networkRequests
             .editPost(postId, editData.title, editData.content)
             .then((response) => {
                 networkRequests
                     .getPosts(0)
                     .then((response) => {
+                        setEditing(false);
                         dispatch(getFreshPosts(response.data.results));
                         toggleModalEdit();
-                        setEditData({title: "", content: ""});
+                        setEditData({ title: "", content: "" });
                     })
                     .catch((e) => {
+                        setEditing(false);
                         alert("could not retrieve new posts");
                     });
             })
             .catch((e) => {
+                setEditing(false);
                 alert("could not edit your post");
             });
     };
@@ -123,20 +134,20 @@ function PostModel(props: { postId: number; title: any; username: any; created_d
                                     <DeleteOverlayStyle {...props}>{contentElement}</DeleteOverlayStyle>
                                 )}
                             >
-                                {/* { */}
-                                {/* !deleting ? */}
-                                <>
-                                    <h2>Are you sure you want to delete this item?</h2>
-                                    <aside>
-                                        <aside>
-                                            <CancelDelete onClick={toggleModalDelete}>Cancel</CancelDelete>
-                                            <ConfirmDelete onClick={deletePost}>Delete</ConfirmDelete>
-                                        </aside>
-                                    </aside>
-                                </>
-                                {/* : */}
-                                {/* <h1>LOADING</h1> */}
-                                {/* } */}
+                                {
+                                    !deleting ?
+                                        <>
+                                            <h2>Are you sure you want to delete this item?</h2>
+                                            <aside>
+                                                <aside>
+                                                    <CancelDelete onClick={toggleModalDelete}>Cancel</CancelDelete>
+                                                    <ConfirmDelete onClick={deletePost}>Delete</ConfirmDelete>
+                                                </aside>
+                                            </aside>
+                                        </>
+                                        :
+                                        <Loading message="Deleting"></Loading>
+                                }
                             </Modal>
 
                             <img src={edit} onClick={toggleModalEdit}></img>
@@ -152,33 +163,33 @@ function PostModel(props: { postId: number; title: any; username: any; created_d
                                     <DeleteOverlayStyle {...props}>{contentElement}</DeleteOverlayStyle>
                                 )}
                             >
-                                {/* { */}
-                                {/* !deleting ? */}
-                                <>
-                                    <h2>Edit item</h2>
-                                    <h3>Title</h3>
-                                    <input
-                                        type="text"
-                                        placeholder="Hello world"
-                                        value={editData.title}
-                                        onChange={(e) => handleEditInputs(e, "title")}
-                                    ></input>
-                                    <h3>Content</h3>
-                                    <textarea
-                                        placeholder="Content here"
-                                        value={editData.content}
-                                        onChange={(e) => handleEditInputs(e, "content")}
-                                    ></textarea>
-                                    <aside>
-                                        <aside>
-                                            <CancelDelete onClick={toggleModalEdit}>Cancel</CancelDelete>
-                                            <ConfirmEdit onClick={editPost}>Save</ConfirmEdit>
-                                        </aside>
-                                    </aside>
-                                </>
-                                {/* : */}
-                                {/* <h1>LOADING</h1> */}
-                                {/* } */}
+                                {
+                                    !editing ?
+                                        <>
+                                            <h2>Edit item</h2>
+                                            <h3>Title</h3>
+                                            <input
+                                                type="text"
+                                                placeholder="Hello world"
+                                                value={editData.title}
+                                                onChange={(e) => handleEditInputs(e, "title")}
+                                            ></input>
+                                            <h3>Content</h3>
+                                            <textarea
+                                                placeholder="Content here"
+                                                value={editData.content}
+                                                onChange={(e) => handleEditInputs(e, "content")}
+                                            ></textarea>
+                                            <aside>
+                                                <aside>
+                                                    <CancelDelete onClick={toggleModalEdit}>Cancel</CancelDelete>
+                                                    <ConfirmEdit onClick={editPost}>Save</ConfirmEdit>
+                                                </aside>
+                                            </aside>
+                                        </>
+                                        :
+                                        <Loading message="Editing"></Loading>
+                                }
                             </Modal>
                         </div>
                         :
