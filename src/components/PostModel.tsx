@@ -15,9 +15,13 @@ function PostModel(props: { postId: number; title: any; username: any; created_d
     const { postId, title, username, created_datetime, content } = props;
 
     const signUpText = useAppSelector((state) => state.signUpReducer.signUpText);
-    
+
     const [isOpenDelete, setIsOpenDelete] = useState(false);
     const [isOpenEdit, setIsOpenEdit] = useState(false);
+    const [editData, setEditData] = useState({
+        title: "",
+        content: "",
+    });
 
     const dispatch = useDispatch();
 
@@ -78,8 +82,31 @@ function PostModel(props: { postId: number; title: any; username: any; created_d
         setIsOpenEdit(!isOpenEdit);
     };
 
-    function editPost() {
+    function handleEditInputs(e, property) {
+        setEditData({ ...editData, [property]: e.target.value });
+    };
 
+    function editPost() {
+        networkRequests
+            .editPost(postId, editData.title, editData.content)
+            .then((response) => {
+                console.log(response.data);
+                console.log("editou");
+                networkRequests
+                    .getPosts(0)
+                    .then((response) => {
+                        dispatch(getFreshPosts(response.data.results));
+                        console.log("pegou lista de novo");
+                        toggleModalEdit();
+                        setEditData({title: "", content: ""});
+                    })
+                    .catch((e) => {
+                        console.log(e.response.data);
+                    });
+            })
+            .catch((e) => {
+                console.log(e.response.data);
+            });
     };
 
     return (
@@ -140,14 +167,14 @@ function PostModel(props: { postId: number; title: any; username: any; created_d
                                     <input
                                         type="text"
                                         placeholder="Hello world"
-                                        // value={}
-                                        // onChange={}
+                                        value={editData.title}
+                                        onChange={(e) => handleEditInputs(e, "title")}
                                     ></input>
                                     <h3>Content</h3>
                                     <textarea
                                         placeholder="Content here"
-                                        // value={}
-                                        // onChange={}
+                                        value={editData.content}
+                                        onChange={(e) => handleEditInputs(e, "content")}
                                     ></textarea>
                                     {/* COLOCAR CONTEUDO AQUI EM CIMA */}
                                     <aside>
