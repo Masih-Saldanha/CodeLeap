@@ -20,11 +20,14 @@ export const postListSlice = createSlice({
     name: "postList",
     initialState,
     reducers: {
+        getFreshPosts: (state, action) => {
+            state.postList = action.payload;
+        },
         getPosts: (state, action) => {
             state.postList = [...state.postList, ...action.payload];
         }
     },
 });
 
-export const { getPosts } = postListSlice.actions;
+export const { getFreshPosts, getPosts } = postListSlice.actions;
 export const postListReducer = postListSlice.reducer;

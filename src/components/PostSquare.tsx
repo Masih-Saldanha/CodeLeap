@@ -5,6 +5,7 @@ import styled from "styled-components";
 import { useAppSelector } from "../redux/hook.ts";
 import { editTitle, editContent } from "../redux/postSlice.ts";
 import networkRequests from "../actions/networkRequests.ts";
+import { getFreshPosts } from "../redux/postListSlice.ts";
 
 function PostSquare() {
     const signUpText = useAppSelector((state) => state.signUpReducer.signUpText);
@@ -28,6 +29,14 @@ function PostSquare() {
         networkRequests
             .postText(signUpText, titleText, contentText)
             .then((response) => {
+                networkRequests
+                    .getPosts(0)
+                    .then((response) => {
+                        dispatch(getFreshPosts(response.data.results));
+                    })
+                    .catch((e) => {
+                        console.log(e.response.data);
+                    });
                 console.log(response.data);
             })
             .catch((e) => {

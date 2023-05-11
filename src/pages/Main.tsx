@@ -7,7 +7,7 @@ import PostSquare from "../components/PostSquare.tsx";
 import PostModel from "../components/PostModel.tsx";
 import networkRequests from "../actions/networkRequests.ts";
 import { useDispatch } from "react-redux";
-import { getPosts } from "../redux/postListSlice.ts";
+import { getFreshPosts, getPosts } from "../redux/postListSlice.ts";
 
 function Main() {
     const navigate = useNavigate();
@@ -25,7 +25,7 @@ function Main() {
         networkRequests
             .getPosts(0)
             .then((response) => {
-                dispatch(getPosts(response.data.results));
+                dispatch(getFreshPosts(response.data.results));
             })
             .catch((e) => {
                 console.log(e.response.data);

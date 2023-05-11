@@ -1,9 +1,16 @@
 import React from "react";
 import dayjs from "dayjs";
 import styled from "styled-components";
+// import { BiEdit } from "react-icons/bi"
 
-function PostModel(props) {
+import { useAppSelector } from "../redux/hook.ts";
+import trash from "../assets/trash.svg";
+import edit from "../assets/edit.svg";
+
+function PostModel(props: { title: any; username: any; created_datetime: any; content: any; }) {
     const { title, username, created_datetime, content } = props;
+
+    const signUpText = useAppSelector((state) => state.signUpReducer.signUpText);
 
     const now = dayjs(Date());
     const date = dayjs(created_datetime);
@@ -31,10 +38,29 @@ function PostModel(props) {
     months === 0 ? (dateString = dateString) : (dateString = `${months} ${monthString} ago`);
     years === 0 ? (dateString = dateString) : (dateString = `${years} ${yearString} ago`);
 
+    function handleDelete() {
+
+    };
+
+    function handleEdit() {
+
+    };
+
     return (
         <PostDiv>
             <TopBar>
                 <h1>{title}</h1>
+                {
+                    signUpText === username ?
+                        <div>
+                            <img src={trash} onClick={handleDelete}></img>
+                            <img src={edit} onClick={handleEdit}></img>
+                            {/* <BiEdit size="24px" color="white" /> */}
+                            {/* <BiTrashAlt size="24px" color="white" /> */}
+                        </div>
+                        :
+                        <></>
+                }
             </TopBar>
             <UserDataBar>
                 <h5>{username}</h5>
@@ -58,6 +84,17 @@ const TopBar = styled.div`
     background-color: #7695EC;
     border-radius: 16px 16px 0px 0px;
     padding: 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    div {
+        width: 86px;
+        display: flex;
+        justify-content: space-between;
+        img {
+            height: 30px;
+        }
+    }
 `
 
 const UserDataBar = styled.div`

@@ -53,7 +53,7 @@ const SignUpForm = styled.main`
     border: 1px solid #CCCCCC;
     border-radius: 16px;
     padding: 24px;
-    width: 500px;
+    min-width: 500px;
     position: absolute;
     top: 50%;
     left: 50%;
@@ -65,6 +65,10 @@ const SignUpForm = styled.main`
         h3 {
             margin-bottom: 8px;
         }
+    }
+
+    @media only screen and (max-width: 800px) {
+        min-width: 280px;
     }
 `
 
