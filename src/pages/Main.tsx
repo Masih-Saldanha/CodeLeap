@@ -2,11 +2,10 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import InfiniteScroll from "react-infinite-scroll-component";
-import { Oval } from "react-loader-spinner";
 import styled from "styled-components";
 
 import { useAppSelector } from "../redux/hook";
-import { getFreshPosts, getPosts } from "../redux/postListSlice";
+import { getFreshPosts, getMorePosts } from "../redux/postListSlice";
 import networkRequests from "../actions/networkRequests";
 import PostSquare from "../components/PostSquare";
 import PostModel from "../components/PostModel";
@@ -17,7 +16,7 @@ function Main() {
 
     const signUpText = useAppSelector((state) => state.signUpReducer.signUpText);
     const postList = useAppSelector((state) => state.postListReducer.postList);
-    const [page, setPage] = useState(1);
+    const page = useAppSelector((state) => state.postListReducer.page);
 
     const dispatch = useDispatch();
 
@@ -40,8 +39,7 @@ function Main() {
         networkRequests
             .getPosts(page)
             .then((response) => {
-                dispatch(getPosts(response.data.results));
-                setPage(page + 1);
+                dispatch(getMorePosts(response.data.results));
             })
             .catch((e) => {
                 alert("could not retrieve new posts");

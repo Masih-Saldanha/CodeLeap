@@ -10,10 +10,12 @@ interface Post {
 
 interface PostListState {
     postList: Post[];
+    page: number;
 };
 
 const initialState: PostListState = {
     postList: [],
+    page: 1,
 };
 
 export const postListSlice = createSlice({
@@ -22,12 +24,24 @@ export const postListSlice = createSlice({
     reducers: {
         getFreshPosts: (state, action) => {
             state.postList = action.payload;
+            state.page = 1;
         },
-        getPosts: (state, action) => {
-            state.postList = [...state.postList, ...action.payload];
-        }
+        getMorePosts: (state, action) => {
+            const arrayPayload: Post[] = [...action.payload];
+            const arrayLastTenPostList: Post[] = [...state.postList.slice(10)];
+            for (let i = 0; i < arrayPayload.length; i++) {
+                const elementArrayPayload = arrayPayload[i];
+                for (const elementArrayLastTenPostList of arrayLastTenPostList) {
+                    if (elementArrayPayload.id === elementArrayLastTenPostList.id) {
+                        arrayPayload.splice(i, 1);
+                    }
+                }
+            }
+            state.postList = [...state.postList, ...arrayPayload];
+            state.page += 1;
+        },
     },
 });
 
-export const { getFreshPosts, getPosts } = postListSlice.actions;
+export const { getFreshPosts, getMorePosts } = postListSlice.actions;
 export const postListReducer = postListSlice.reducer;
