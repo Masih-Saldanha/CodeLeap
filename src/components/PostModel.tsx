@@ -227,6 +227,10 @@ const TopBar = styled.div`
         justify-content: space-between;
         img {
             height: 30px;
+            opacity: 0.7;
+            :hover {
+                opacity: 1;
+            }
         }
     }
 `
@@ -301,16 +305,28 @@ const DeleteOverlayStyle = styled.div`
 const CancelDelete = styled.button`
     background-color: #FFFFFF;
     border: 1px solid #999999;
+    :hover {
+        background-color: red;
+        color: white;
+    }
 `
 
 const ConfirmDelete = styled.button`
     background-color: #FF5151;
     color: #FFFFFF;
+    :hover {
+        background-color: red;
+        color: white;
+    }
 `
 
 const ConfirmEdit = styled.button`
     background-color: #47B960;
     color: #FFFFFF;
+    :hover {
+        background-color: green;
+        color: white;
+    }
 `
 
 export default PostModel;

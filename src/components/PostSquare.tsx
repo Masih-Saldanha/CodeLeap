@@ -118,6 +118,10 @@ const ButtonBox = styled.div`
     button {
         background-color: ${(props: { children: { props: { color: any; }; }; }) => props.children.props.color};
         color: #FFFFFF;
+        :hover {
+            background-color: ${(props) => props.children.props.disabled === true ? "" : "green"};
+            color: white;
+        }
     }
 `
 
