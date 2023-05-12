@@ -121,7 +121,7 @@ function PostModel(props: { postId: number; title: any; username: any; created_d
                 {
                     signUpText === username ?
                         <div>
-                            <img src={trash} onClick={toggleModalDelete}></img>
+                            <DeleteButton src={trash} onClick={toggleModalDelete}></DeleteButton>
                             <Modal
                                 isOpen={isOpenDelete}
                                 onRequestClose={toggleModalDelete}
@@ -150,7 +150,7 @@ function PostModel(props: { postId: number; title: any; username: any; created_d
                                 }
                             </Modal>
 
-                            <img src={edit} onClick={toggleModalEdit}></img>
+                            <EditButton src={edit} onClick={toggleModalEdit}></EditButton>
                             <Modal
                                 isOpen={isOpenEdit}
                                 onRequestClose={toggleModalEdit}
@@ -226,12 +226,22 @@ const TopBar = styled.div`
         display: flex;
         justify-content: space-between;
         img {
+            width: 30px;
             height: 30px;
-            opacity: 0.7;
-            :hover {
-                opacity: 1;
-            }
+            border-radius: 8px;
         }
+    }
+`
+
+const DeleteButton = styled.img`
+    :hover {
+        background-color: red;
+    }
+`
+
+const EditButton = styled.img`
+    :hover {
+        background-color: green;
     }
 `
 

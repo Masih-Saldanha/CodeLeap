@@ -1,19 +1,28 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import styled from "styled-components";
 
 import { useAppSelector } from "../redux/hook";
-import { editSignUpText } from "../redux/signUpSlice";
+import { editSignUpText, storeUser } from "../redux/signUpSlice";
 
 function SignUpSquare() {
     const navigate = useNavigate();
 
+    const localStorageUser = useAppSelector((state) => state.signUpReducer.localStorageUser);
     const signUpText = useAppSelector((state) => state.signUpReducer.signUpText);
     const loading = useAppSelector((state) => state.signUpReducer.loading);
     const buttonBackgroundColor = useAppSelector((state) => state.signUpReducer.buttonBackgroundColor);
 
     const dispatch = useDispatch();
+
+    useEffect(() => {
+        if (localStorageUser !== null) {
+            dispatch(editSignUpText(localStorageUser));
+            navigate("/main");
+            return;
+        }
+    }, [])
 
     function handleText(e: { target: { value: any; }; }) {
         dispatch(editSignUpText(e.target.value));
@@ -21,6 +30,7 @@ function SignUpSquare() {
 
     function handleSubmit(e: { preventDefault: () => void; }) {
         e.preventDefault();
+        dispatch(storeUser(signUpText));
         navigate("/main");
     };
 
